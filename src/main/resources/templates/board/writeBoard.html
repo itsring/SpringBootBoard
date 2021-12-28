@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout/head :: head">
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<header th:include="layout/header :: header"> </header>
+
+	<main class="container">
+		<div class="row">
+			<div class="col-sm mx-auto">
+				<form action="/board/insertBoard.do" method="post" th:action="@{/board/insertBoard.do}">
+				<div class="my-3">
+					<label for="title" class="form-label">제목 :		</label>
+					<input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요">
+				</div>
+				<div class="my-3">
+					<label for="creater_id" class="form-label">사용자 ID : </label>
+					<input type="text" class="form-control" id="creater_id" name="creater_id" placeholder="ID를 입력하세요">
+				</div>
+				<div class="my-3">
+					<label for="contents" class="form-label">내용  :		</label>
+					<textarea rows="5" class="form-control" id="contents" name="contents"></textarea>
+				</div>
+				<div class="my-3">
+					<button type="submit" class="btn btn-secondary float-start" id="btn-list">목록으로</button>
+					<button type="submit" class="btn btn-primary float-end" >등록</button>
+					<button type="submit" class="btn btn-warning float-end me-3" id="btn-cancel">취소</button>
+				</div>
+				</form>
+			</div>
+		</div>
+	</main>
+
+	<footer th:replace="layout/footer :: footer"> </footer>
+	<script>
+		window.addEventListener("DOMContentLoaded",function(){
+			var brnList = document.querySelector("#btn-list");
+			var brnCancel = document.querySelector("#btn-cancle");
+			
+			btnList.addEventListener("click",function(){
+				history.back();
+			});
+			brnCancel.addEventListener("click",function(){
+				history.back();
+			});
+		});
+	</script>
+</body>
+</html>

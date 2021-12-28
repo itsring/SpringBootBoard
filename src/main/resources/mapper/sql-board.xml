@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatits.org//DTD Mapper 3.0//En" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+namespace : bybatis에 의해서 매핑된 mapper 파일을 지정
+해당 xml 파일과 mapper 파일이 연동됨
+mapper interface 파일의 구현체가 된 xml임 
+-->
+<mapper namespace="com.bitc.board.mapper.BoardMapper">
+<!--id : mapper 파일의 메서드명, override 효과
+	resultType : 해당 SQL문 실행 후 반환할 결과값의 타입
+	parameterType : 해당 SQL 문이 실행시 필요한 데이터의 타입-->
+	<select id="selectBoardList" resultType="com.bitc.board.dto.BoardDto">
+		<![CDATA[ 
+			SELECT
+			idx, title, creater_id, hit_cnt, 
+			DATE_FORMAT (created_date,'%Y.%m.%d %H:%i:%s') AS created_date
+			FROM t_board
+			WHERE deleted_yn = 'N'
+			ORDER BY idx DESC;
+		]]>
+	</select>
+	<!--
+	mybatis는 기본적으로 preparedStatement를 사용하여 SQL쿼리를 실행함
+	mybatis에서 변수 입력 부분을 #{..}으로 표기함
+	#{...}에 들어갈 변수는 Dto 클래스의 멤버 변수를 사용함
+	-->
+	<insert id="insertBoard" parameterType="com.bitc.board.dto.BoardDto">
+		<![CDATA[ 
+		insert into 
+			t_board (title, creater_id, created_date, contents) 
+			values (#{title},#{creater_id},now(),#{contents});
+		]]>
+	</insert>
+</mapper>

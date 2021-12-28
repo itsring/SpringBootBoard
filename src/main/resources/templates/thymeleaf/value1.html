@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>thymeleaf에서 변수 사용하기</title>
+</head>
+<body>
+	<div id="div01">
+		<h3>${형태로 변수 표현하기}</h3>
+		<div>
+			<p th:text="${member.userId}">asgd</p>
+			<p th:text="${member.userPw}">qwer</p>
+			<p th:text="${member.userEmail}">asdf@bitc.co.kr</p>
+			<p th:text="${member.userName}">qwer</p>
+		</div>
+		<hr>
+
+		<h3>#{} 형태로 변수 사용하기</h3>
+		<div th:object="${member}">
+			<p th:text="*{userId}">asdf</p>
+			<p th:text="*{userPw}">asdf</p>
+			<p th:text="*{userEmail}">asdf</p>
+			<p th:text="*{userName}">asdf</p>
+		</div>
+		<hr>
+		<h3>#{...}사용하기</h3>
+		<div>
+			<p th:text="#{home.welcome}">환영</p>
+			<p th:text="#{addr}">주소</p>
+			<p th:text="#{tel}">전화번호</p>
+		</div>
+		<hr>
+		<h3>링크 표현 사용하기 @{...}</h3>
+		<div>
+			<img alt="" src="/images/photo-3.jpg" width="300px"> <img
+				alt="" th:src="@{/images/photo-3.jpg}" width="300px"> <a
+				th:href="@{/images/'${image}'}" width="300px"></a>
+			<p th:text="${image}"></p>
+			<img alt="" src="/images/photo-3.jpg" ht:src="@{/images/photo-3.jpg}" width="300px">
+		</div>
+		<hr>
+		<h3>문자열 사용하기</h3>
+		<div>
+			<p th:text="'문자열 출력'">기본 문자열</p>
+			<p th:text="'문자열 출력'+${image}">기본 문자열</p>
+			<p th:text="|문자열 출력 ${image}|">기본 문자열</p>
+		</div>
+		<hr>
+		<h3>숫자 Boolean 사용하기</h3>
+		<div>
+			<p th:text="1234">4321</p>
+			<p th:text="1234+4321">4321</p>
+			<p th:text="true">4321</p>
+			<p th:text="(${image}=='/photo-3.jpg')==true">4321</p>
+
+		</div>
+		<hr>
+		<h3>조건문 사용</h3>
+		<div>
+			<div th:if="${image}=='photo-3.jpg'">
+				<p>${image}의 이름은 : <span th:text="${image}"></span> </p>
+			</div>
+			<div th:unless="${image}=='photo-3.jpg'">
+				<p>${image}의 이름은 : <span th:text="${image}"></span> </p>
+			</div>
+			<p></p>
+
+		</div>
+		<hr>
+		<h3>유틸 객체 사용하기</h3>
+		<div>
+			<p th:text="${#lists.size(memberList)}"></p>
+			<p th:text="${#lists.isEmpty(memberList)}"></p>
+		<!-- 	<p th:text="${#lists.sort(memberList,${memberList.userId})}"></p> -->
+		<!-- 	<p th:text="${#lists.contains(memberList)}"></p> -->
+		</div>
+		
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+</body>
+</html>
