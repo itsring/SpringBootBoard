@@ -1,5 +1,7 @@
 package com.bitc.board.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 /*롬복사용
@@ -11,12 +13,12 @@ public class BoardDto {
 	private int idx;
 	private String title;
 	private String contents;
-	private String creater_id;
-	private String created_date;
-	private String update_id;
-	private String updated_date;
-	private int hit_cnt;
+	private String createrId;
+	private String createdDate;
+	private String updateId;
+	private String updatedDate;
+	private int hitCnt;
 	private String passwd;
-
 	
+	private List<BoardFileDto> fileList;
 }
