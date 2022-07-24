@@ -21,6 +21,9 @@
 	<main class="container my-5">
 		<div class="row">
 			<div class="col-sm mx-auto">
+			<div class="d-flex justify-content-end">
+					<a href="/board/writeBoard.do" class="btn btn-primary">글쓰기</a>
+				</div>
 				<table class="table table-hover table-striped">
 					<thead>
 						<tr>
@@ -32,29 +35,36 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:if="${#lists.size(boardList)}>0"
-							th:each="item : ${boardList}">
-							<td th:text="${item.idx}"></td>
+						<tr	th:each="item : ${users.getList()}">
+							<td th:text="${item.Idx}"></td>
 							<td><a href="/board/selectBoardDetail.do?idx="
-								th:attrappend="href=${item.idx}" th:text="${item.title}"
+								th:attrappend="href=${item.Idx}" th:text="${item.title}"
 								class="text-decoration-none"></a></td>
 							<td th:text="${item.createrId}"></td>
 							<td th:text="${item.createdDate}"></td>
 							<td th:text="${item.hitCnt}"></td>
 						</tr>
-						<tr th:unless="${#lists.size(boardList)} > 0">
-							<td colspan="5">조회된 결과가 없습니다.</td>
-						</tr>
 					</tbody>
 				</table>
-				<div class="d-flex justify-content-end">
-					<a href="/board/writeBoard.do" class="btn btn-primary">글쓰기</a>
-				</div>
+				<div>
+         <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${users.getPrePage() == 0} ? 'disabled'">
+               <a class="page-link" th:href="@{/page(pageNum=${users.getPrePage()})}">Prev</a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(users.getNavigateFirstPage(), users.getNavigateLastPage())}" th:classappend="${page == users.getPageNum()} ? 'active'">
+               <a class="page-link" th:text="${page}" th:href="@{/board/openBoardList.do(pageNum=${page})}"></a>
+            </li>
+            <!-- <li th:classappend="${users.getNextPage() == 0} ? 'disabled'">
+               <a th:href="@{/page(pageNum=${users.getNextPage()})}">Next</a>
+            </li> -->
+            <li class="page-item" th:classappend="${users.getNextPage() == 0} ? 'disabled'">
+               <a class="page-link" th:href="@{/page(pageNum=${users.getNextPage()})}">Next</a>
+            </li>
+         </ul>
+      </div>
 			</div>
 		</div>
 	</main>
-	
 	<footer th:replace="layout/footer :: footer"> </footer>
-
 </body>
 </html>

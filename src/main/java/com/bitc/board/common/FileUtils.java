@@ -14,30 +14,30 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bitc.board.dto.BoardFileDto;
 
-//@Component : ½ºÇÁ¸µÇÁ·¹ÀÓ¿öÅ©°¡ ÀÚµ¿À¸·Î µî·ÏÇÏ¿© °´Ã¼¸¦ ½ÇÇàÇÒ ÀÚ¹ÙÅ¬·¡½º(ºóÁî¿Í Â÷ÀÌÁ¡ÀÌ °ÅÀÇ ¾øÀ½)
+//@Component : ìŠ¤í”„ë§í”„ë ˆì„ì›Œí¬ê°€ ìë™ìœ¼ë¡œ ë“±ë¡í•˜ì—¬ ê°ì²´ë¥¼ ì‹¤í–‰í•  ìë°”í´ë˜ìŠ¤(ë¹ˆì¦ˆì™€ ì°¨ì´ì ì´ ê±°ì˜ ì—†ìŒ)
 @Component
 public class FileUtils {
 
 	public List<BoardFileDto> parseFileInfo(int boardIdx, MultipartHttpServletRequest multiFiles) throws Exception {
-		/* ¸Å°³º¯¼ö·Î ¹ŞÀº ÆÄÀÏ Á¤º¸°¡ ¾øÀ»°æ¿ì nullÀ» ¸®ÅÏ */
+		/* ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì€ íŒŒì¼ ì •ë³´ê°€ ì—†ì„ê²½ìš° nullì„ ë¦¬í„´ */
 		if (ObjectUtils.isEmpty(multiFiles)) {
 			return null;
 		}
-		/* ¸Å°³º¯¼ö·Î ¹ŞÀº ÆÄÀÏ Á¤º¸¿¡¼­ BoardFileDto Å¬·¡½º¿¡¼­ »ç¿ëÇÏ´Â Á¤º¸¸¸ Ãß·Á³»¾î¼­ ¸®½ºÆ®·Î »ı¼ºÇÏ¿© ÀúÀåÇÒ º¯¼ö */
+		/* ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì€ íŒŒì¼ ì •ë³´ì—ì„œ BoardFileDto í´ë˜ìŠ¤ì—ì„œ ì‚¬ìš©í•˜ëŠ” ì •ë³´ë§Œ ì¶”ë ¤ë‚´ì–´ì„œ ë¦¬ìŠ¤íŠ¸ë¡œ ìƒì„±í•˜ì—¬ ì €ì¥í•  ë³€ìˆ˜ */
 		List<BoardFileDto> fileList = new ArrayList<>();
-		// ³¯Â¥ »ç¿ë Çü½ÄÀ» ÁöÁ¤ÇÏ´Â Å¬·¡½º ±¸±Û¿¡¼­ °Ë»öÇØ¼­ API È®ÀÎ
+		// ë‚ ì§œ ì‚¬ìš© í˜•ì‹ì„ ì§€ì •í•˜ëŠ” í´ë˜ìŠ¤ êµ¬ê¸€ì—ì„œ ê²€ìƒ‰í•´ì„œ API í™•ì¸
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMdd");
-		// ÇöÀç½Ã°£À» ÇöÀç °ÅÁÖÇÏ´Â Áö¿ªÀÇ ½Ã°£´ë¸¦ ±âÁØÀ¸·Î ÇÏ¿© Ãâ·Â
+		// í˜„ì¬ì‹œê°„ì„ í˜„ì¬ ê±°ì£¼í•˜ëŠ” ì§€ì—­ì˜ ì‹œê°„ëŒ€ë¥¼ ê¸°ì¤€ìœ¼ë¡œ í•˜ì—¬ ì¶œë ¥
 		ZonedDateTime current = ZonedDateTime.now();
-		// current.format(format) : ÇöÀç ³¯Â¥ ¹× ½Ã°£À» Ãâ·Â ½Ã À§¿¡¼­ ÁöÁ¤ÇÑ Çü½Ä´ë·Î Ãâ·ÂÇÑ´Ù´Â ¸í·É
+		// current.format(format) : í˜„ì¬ ë‚ ì§œ ë° ì‹œê°„ì„ ì¶œë ¥ ì‹œ ìœ„ì—ì„œ ì§€ì •í•œ í˜•ì‹ëŒ€ë¡œ ì¶œë ¥í•œë‹¤ëŠ” ëª…ë ¹
 		String path = "images/" + current.format(format);
-		// FIle Å¬·¡½ºÀÇ °´Ã¼ fileÀ» »ı¼º(À§¿¡¼­ ÁöÁ¤ÇÑ °æ·Î¸¦ ¹ÙÅÁÀ¸·Î »ı¼º)
-		// ¼­¹ö os·Î ÁÖ·Î »ç¿ëÇÏ´Â linux³ª unix´Â Æú´õ ¹× ÆÄÀÏ, °¢Á¾ µğ½ºÅ© µå¶óÀÌ¹ö¸¦ ¸ğµÎ ÆÄÀÏ·Î ÀÎ½ÄÇÔ
+		// FIle í´ë˜ìŠ¤ì˜ ê°ì²´ fileì„ ìƒì„±(ìœ„ì—ì„œ ì§€ì •í•œ ê²½ë¡œë¥¼ ë°”íƒ•ìœ¼ë¡œ ìƒì„±)
+		// ì„œë²„ osë¡œ ì£¼ë¡œ ì‚¬ìš©í•˜ëŠ” linuxë‚˜ unixëŠ” í´ë” ë° íŒŒì¼, ê°ì¢… ë””ìŠ¤í¬ ë“œë¼ì´ë²„ë¥¼ ëª¨ë‘ íŒŒì¼ë¡œ ì¸ì‹í•¨
 		File file = new File(path);
 		if (file.exists() == false) {
 			file.mkdirs();
 		}
-		// ¸Å°³º¯¼ö·Î ¹Ş¾Æ¿Â ÆÄÀÏ Á¤º¸¿¡¼­ ¸ğµç ÆÄÀÏ ÀÌ¸§À» °¡Á®¿È
+		// ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì•„ì˜¨ íŒŒì¼ ì •ë³´ì—ì„œ ëª¨ë“  íŒŒì¼ ì´ë¦„ì„ ê°€ì ¸ì˜´
 		Iterator<String> iterator = multiFiles.getFileNames();
 		String newFileName;
 		String originalFileExtension;
@@ -45,7 +45,7 @@ public class FileUtils {
 
 		while (iterator.hasNext()) {
 			String name = iterator.next();
-			// ÁöÁ¤ÇÑ ÆÄÀÏ¸íÀ» °¡Áö°í ÀÖ´Â ÆÄÀÏÀÇ ¸ğµç Á¤º¸¸¦ °¡Á®¿Í¼­ list¿¡ ³ÖÀ½
+			// ì§€ì •í•œ íŒŒì¼ëª…ì„ ê°€ì§€ê³  ìˆëŠ” íŒŒì¼ì˜ ëª¨ë“  ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ listì— ë„£ìŒ
 			List<MultipartFile> list = multiFiles.getFiles(name);
 
 			for (MultipartFile mFile : list) {
@@ -64,15 +64,15 @@ public class FileUtils {
 							break;
 						}
 					}
-//					ÇöÀç ½Ã°£À» ±âÁØÀ¸·Î ÀÌ¸§À» ¼³Á¤ÇÔ 
-//					1970³â 1¿ù 1ÀÏ 00½Ã 00ºĞ 00ÃÊ¸¦ ±âÁØÀ¸·ÎÇØ¼­ ÇöÀç½Ã°£Â¥±â ÁøÇàµÈ ½Ã°£À» 1/1000 À¸·Î Ç¥Çö
+//					í˜„ì¬ ì‹œê°„ì„ ê¸°ì¤€ìœ¼ë¡œ ì´ë¦„ì„ ì„¤ì •í•¨ 
+//					1970ë…„ 1ì›” 1ì¼ 00ì‹œ 00ë¶„ 00ì´ˆë¥¼ ê¸°ì¤€ìœ¼ë¡œí•´ì„œ í˜„ì¬ì‹œê°„ì§œê¸° ì§„í–‰ëœ ì‹œê°„ì„ 1/1000 ìœ¼ë¡œ í‘œí˜„
 					newFileName = Long.toString(System.nanoTime()) + originalFileExtension;
 
 					BoardFileDto boardFile = new BoardFileDto();
 					boardFile.setBoardIdx(boardIdx);
 					/*
-					 * MultipartFile Å¬·¡ÀÇ getSize() ¸Ş¼­µåÀÇ ¹İÈ¯ Å¸ÀÔÀÌ longÀÌ±â¶§¹®¿¡ SQL¹®¿¡¼­ 1megaByte°¡ ³Ñ¾î°¡´Â °æ¿ì
-					 * 1,xxx·Î Ç¥½ÃµÇ¾î ¹®ÀÚ¿­·Î ÀÎ½ÄÀÌ µÇ±â¶§¹®¿¡ ±×´ë·Î »ç¿ëÇÏÁö ¸øÇÏ°í ¹®ÀÚ¿­·Î º¯È¯ÇÏ¿© »ç¿ë
+					 * MultipartFile í´ë˜ì˜ getSize() ë©”ì„œë“œì˜ ë°˜í™˜ íƒ€ì…ì´ longì´ê¸°ë•Œë¬¸ì— SQLë¬¸ì—ì„œ 1megaByteê°€ ë„˜ì–´ê°€ëŠ” ê²½ìš°
+					 * 1,xxxë¡œ í‘œì‹œë˜ì–´ ë¬¸ìì—´ë¡œ ì¸ì‹ì´ ë˜ê¸°ë•Œë¬¸ì— ê·¸ëŒ€ë¡œ ì‚¬ìš©í•˜ì§€ ëª»í•˜ê³  ë¬¸ìì—´ë¡œ ë³€í™˜í•˜ì—¬ ì‚¬ìš©
 					 */
 					boardFile.setFileSize(Long.toString(mFile.getSize()));
 					boardFile.setOriginalFileName(mFile.getOriginalFilename());
@@ -81,12 +81,12 @@ public class FileUtils {
 					fileList.add(boardFile);
 
 					file = new File(path + "/" + newFileName);
-					// ÇöÀç ÆÄÀÏÀ» ÁöÁ¤ÇÑ À§Ä¡·Î ÀÌµ¿
+					// í˜„ì¬ íŒŒì¼ì„ ì§€ì •í•œ ìœ„ì¹˜ë¡œ ì´ë™
 					mFile.transferTo(file);
 				}
 			}
 		}
-		// ¸ğµç ÆÄÀÏ Á¤º¸¸¦ °¡Áö°í ÀÖ´Â ¸®½ºÆ®¸¦ ¹İÈ¯
+		// ëª¨ë“  íŒŒì¼ ì •ë³´ë¥¼ ê°€ì§€ê³  ìˆëŠ” ë¦¬ìŠ¤íŠ¸ë¥¼ ë°˜í™˜
 
 		return fileList;
 	}

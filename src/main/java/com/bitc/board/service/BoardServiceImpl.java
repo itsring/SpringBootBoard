@@ -12,6 +12,8 @@ import com.bitc.board.common.FileUtils;
 import com.bitc.board.dto.BoardDto;
 import com.bitc.board.dto.BoardFileDto;
 import com.bitc.board.mapper.BoardMapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 
 /* 내부에서 자바 로직을 처리하는 어노테이션
  * 지정한 interface 대신 실행하는 의미 */
@@ -94,6 +96,12 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardFileDto selectBoardFileInfo(@Param("fileIdx") int fileIdx, @Param("boardIdx") int boardIdx) throws Exception{
 		return boardMapper.selectBoardFileInfo(fileIdx, boardIdx);
+	}
+
+	@Override
+	public Page<BoardDto> selectEmpList(int pageNum) throws Exception {
+		PageHelper.startPage(pageNum, 5);
+		return boardMapper.selectEmpList();
 	}
 }
 

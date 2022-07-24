@@ -18,61 +18,64 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bitc.board.dto.BoardDto;
 import com.bitc.board.dto.BoardFileDto;
 import com.bitc.board.service.BoardService;
+import com.github.pagehelper.PageInfo;
 
-/*ÇØ´ç Å¬·¡½º°¡ MVC¸ðµ¨¿¡¼­ controlºÎºÐÀ» ´ã´çÇÏ´Â ÆÄÀÏ¸®¶ó´Â°ÍÀ» ¾Ë·ÁÁÖ´Â ¾î³ëÅ×ÀÌ¼Ç
- * @Controller : ÀÏ¹ÝÀûÀÎ controlºÎºÐÀ» ´ã´çÇÏ´Â ¾î³ëÅ×ÀÌ¼Ç
- * @restController : Restful API ¹æ½ÄÀ» »ç¿ëÇÒ °æ¿ì »ç¿ëÇÏ´À ¾î³ëÅ×ÀÌ¼Ç (Å¬¶óÀÌ¾ðÆ®¿¡ µ¥ÀÌÅÍ ÀÚÃ¼¸¦ Àü¼Û)*/
+/*ï¿½Ø´ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MVCï¿½ðµ¨¿ï¿½ï¿½ï¿½ controlï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½Â°ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½
+ * @Controller : ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ controlï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½
+ * @restController : Restful API ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½ (Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)*/
 @Controller
 public class BoardController {
 
-	/* ºñÁî´Ï½º ·ÎÁ÷À» Ã³¸®ÇÏ´Â ¼­ºñ½º ºó°ú ¿¬°á */
+	/* ï¿½ï¿½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 	@Autowired
 	private BoardService boardService;
 
-	/* »ç¿ëÀÚ°¡ Á¢¼Ó ÇÒ ¼ö ÀÖ´Â ÁÖ¼Ò¸¦ ÇØ´ç ¸Þ¼­µå¿Í ¿¬°áÇÏ´Â ¾î³ëÅ×ÀÌ¼Ç */
+	/* ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ö¼Ò¸ï¿½ ï¿½Ø´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½ */
 	@RequestMapping("/board/openBoardList.do")
-	public ModelAndView openBoardList() throws Exception {
+	public ModelAndView openBoardList(@RequestParam(required=false, defaultValue= "1", value="pageNum") int pageNum) throws Exception {
 		/*
-		 * ModelAndView Å¬·¡½º : µ¥ÀÌÅÍ¿Í È­¸éÀ» µ¿½Ã¿¡ °¡Áö°í ÀÖ´Â Å¬·¡½º ÇØ´ç Å¬·¡½º Å¸ÀÔÀ» ¹ÝÈ¯ÇÏ¸é ÁöÁ¤ÇÑ html ÆÄÀÏ¿¡ µ¥ÀÌÅÍ¸¦
-		 * Æ÷ÇÔÇÏ¿© Å¬¶óÀÌ¾ðÆ®¿¡°Ô Àü¼Û ModelAndView Å¬·¡½º »ý¼ºÀÚÀÇ ¸Å°³º¯¼ö·Î html ÅÛÇÃ¸´ ÆÄÀÏÀÇ À§Ä¡¸¦ ÁöÁ¤ÇÔ htmlÅÛÇÃ¸´ÀÇ À§Ä¡´Â
-		 * /src/main/resoures/templates¸¦ ±âº»À¸·Î ÇÔ
+		 * ModelAndView Å¬ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ È­ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ html ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½
+		 * ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ModelAndView Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ html ï¿½ï¿½ï¿½Ã¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ htmlï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½
+		 * /src/main/resoures/templatesï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 		 */
 		ModelAndView mv = new ModelAndView("/board/boardList");
-
-		/* ¼­ºñ½º ºóÀÇ selectBoardList()¸Þ¼­µå¸¦ ½ÇÇàÇÏ¿© ½ÇÁ¦ µ¥ÀÌÅÍ ¸ñ·ÏÀ» °¡Á®¿È */
+		PageInfo<BoardDto> page = new PageInfo<>(boardService.selectEmpList(pageNum), 5);
+		
+		mv.addObject("users", page);
+		/* ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ selectBoardList()ï¿½Þ¼ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 		List<BoardDto> boardList = boardService.selectBoardList();
 		int arrays[] = { 1, 2, 3, 4, 5 };
 
-		/* °¡Á®¿Â µ¥ÀÌÅÍ ¸ñ·ÏÀ» ModelAndView Å¬·¡½º °´Ã¼¿¡ Ãß°¡ */
+		/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ModelAndView Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ß°ï¿½ */
 		mv.addObject("boardList", boardList);
 		mv.addObject("arrays", arrays);
 
-		/* Å¬¶óÀÌ¾ðÆ®¿¡ ModelAndView Å¬·¡½º Å¸ÀÔÀÇ °´Ã¼¸¦ Àü¼Û */
+		/* Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ModelAndView Å¬ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 		return mv;
 	}
 
 	/*
-	 * Å¬¶óÀÌ¾ðÆ® ¿äÃ» ÁÖ¼Ò¿Í ¸Þ¼­µå¸¦ ¿¬µ¿ À¥ºê¶ó¿ìÀúÀÇ ÁÖ¼ÒÃ¢¿¡ ¼­¹öÁÖ¼Ò : Æ÷Æ®¹øÈ£/board/writeBoard.do¸¦ ÀÔ·ÂÇÏ¸é ¿¬°áµÈ
-	 * wirteBoard() ¸Þ¼­µå°¡ ½ÇÇàµÊ
+	 * Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½Ã» ï¿½Ö¼Ò¿ï¿½ ï¿½Þ¼ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ : ï¿½ï¿½Æ®ï¿½ï¿½È£/board/writeBoard.doï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * wirteBoard() ï¿½Þ¼ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	@RequestMapping("board/writeBoard.do")
 	public String writeBoard() throws Exception {
 		/*
-		 * ¹ÝÈ¯Å¸ÀÔÀÌ StringÀÏ °æ¿ì ±âº»ÀûÀ¸·Î templates Æú´õ¿¡ ÀÖ´Â ÅÛÇÃ¸´ÀÏÀ» ÁöÁ¤ÇÔ tmeplates Æú´õ ¾Æ·¡¿¡ ÀÖ´Â
-		 * /board/boardWirte.html ÆÄÀÏÀ» ÁöÁ¤ÇÔ
+		 * ï¿½ï¿½È¯Å¸ï¿½ï¿½ï¿½ï¿½ Stringï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ templates ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ tmeplates ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½
+		 * /board/boardWirte.html ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		 */
 		return "board/writeBoard";
 	}
 
 	/*
-	 * RequestMapping°ú ¿¬°áµÈ /board/insertBoard.do¿Í ¿¬°áµÈ insertBoard()¸Þ¼­µå°¡ ½ÇÇà ¸Å°³º¯¼ö·Î
-	 * Å¬¶óÀÌ¾ðÆ®¿¡¼­ BoardDto Å¸ÀÔÀÇ °´Ã¼ board¸¦ ¹Þ¾Æ¿È
+	 * RequestMappingï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ /board/insertBoard.doï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ insertBoard()ï¿½Þ¼ï¿½ï¿½å°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ BoardDto Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ boardï¿½ï¿½ ï¿½Þ¾Æ¿ï¿½
 	 */
 	@RequestMapping("board/insertBoard.do")
 	public String insertBoard(BoardDto board, MultipartHttpServletRequest multiFiles) throws Exception {
 		/*
-		 * Spring framework¿¡¼­ ¹Ì¸® »ý¼ºÇÑ BoardServiceÅ¸ÀÔÀÇ °´Ã¼ boardService¸¦ insertBoard()¸Þ¼­µå¸¦
-		 * ½ÇÇà Å¬¶óÀÌ¾ðÆ®¿¡¼­ ¾÷·ÎµåµÈ ÆÄÀÏ Á¤º¸¸¦ ºÐ¼®ÇÏ±â À§ÇØ¼­ BoardService¿¡ ÆÄÀÏÁ¤º¸¸¦ ¸Å°³º¯¼ö·Î Ãß°¡ÇÔ
+		 * Spring frameworkï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BoardServiceÅ¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ boardServiceï¿½ï¿½ insertBoard()ï¿½Þ¼ï¿½ï¿½å¸¦
+		 * ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¼ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ BoardServiceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½
 		 */
 		boardService.insertBoard(board, multiFiles);
 
@@ -82,7 +85,7 @@ public class BoardController {
 	@RequestMapping("/board/selectBoardDetail.do")
 	public ModelAndView openBoardDetail(@RequestParam("idx") int idx) throws Exception {
 		ModelAndView mv = new ModelAndView("/board/boardDetail");
-		// DB¼­¹ö¿¡ ¿¬°áÇØ¼­ µ¥ÀÌÅÍ °¡Á®¿À±â
+		// DBï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		BoardDto board = boardService.selectBoardDetail(idx);
 
 		mv.addObject("board", board);
@@ -104,37 +107,37 @@ public class BoardController {
 	}
 
 	@RequestMapping("/board/downloadBoardFile.do")
-	/*HttpServletResponse : ¼­¹ö°¡ Å¬¶óÀÌ¾ðÆ®¿¡°Ô Àü´ÞÇÒ µ¥ÀÌÅÍ¸¦ ´ã°íÀÖ´Â ³»Àå°´Ã¼
+	/*HttpServletResponse : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½å°´Ã¼
 	 */
 	public void downloadBoardFile(@RequestParam("fileIdx") int fileIdx, @RequestParam("boardIdx") int boardIdx, HttpServletResponse response)
 			throws Exception {
-		/*DB¿¡¼­ ÁöÁ¤ÇÑ ÆÄÀÏ¿¡ ´ëÇÑ Á¤º¸¸¦ °¡Á®¿À´Â ¸í·É
-		 * »ç¿ëÀÚ°¡ Å¬¸¯ÇÑ ÆÄÀÏ¿¡ ´ëÇÑ Á¤º¸¸¦ °¡Á®¿À±â ¶§¹®¿¡ BoardFileDto Å¸ÀÔÀ¸·Î °¡Á®¿È
-		 List´Â ¿©·¯°³ÀÇ DtoÅ¸ÀÔÀ» °¡Á®¿Ã¶§ »ç¿ë*/
+		/*DBï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+		 * ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BoardFileDto Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		 Listï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DtoÅ¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ ï¿½ï¿½ï¿½*/
 		BoardFileDto boardFile = boardService.selectBoardFileInfo(fileIdx, boardIdx);
-		/*isEmpty==false =true¸é µ¥ÀÌÅÍ°¡ ÀÖ´Ù´Â ¶æ */
+		/*isEmpty==false =trueï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ö´Ù´ï¿½ ï¿½ï¿½ */
 		if (ObjectUtils.isEmpty(boardFile) == false) {
-			//ÆÄÀÏ ÀÌ¸§ °¡Á®¿À±â
+			//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			String fileName = boardFile.getOriginalFileName();
-			// apache commons.ioÀÇ FileUtilsÀÇ Å¬·¡½º¸¦ »ç¿ëÇÏ¿© ÆÄÀÏÀ» byte¹è¿­ Å¸ÀÔÀ¸·Î º¯È¯ÇÔ
-			// getStoredFilePath()¸¦ ÅëÇØ¼­ ¼­¹ö¿¡ ½ÇÁ¦ ÀúÀåµÈ ÆÄÀÏÀ» ºÒ·¯¿Í¼­ Byte[]Å¸ÀÔÀÇ ¹è¿­·Î º¯È¯
-			//tcp/ip Åë½ÅÀÇ ±âº» Àü¼Û µ¥ÀÌÅÍÅ¸ÀÔÀÌ byte[]ÀÌ±â ¶§¹®¿¡ 
+			// apache commons.ioï¿½ï¿½ FileUtilsï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ byteï¿½è¿­ Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
+			// getStoredFilePath()ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Í¼ï¿½ Byte[]Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½È¯
+			//tcp/ip ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ byte[]ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 			byte[] files = FileUtils.readFileToByteArray(new File(boardFile.getStoredFilePath()));
-// Å¬¶óÀÌ¾ðÆ®¿¡ Àü¼ÛÇÒ µ¥ÀÌÅÍ ³»Àå°´Ã¼ÀÎ responseÀÇ Çì´õ¿¡ ÄÜÅÙÃ÷ Å¸ÀÔ, Å©±â, ÇüÅÂ¸¦ ¼³Á¤
+// Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½å°´Ã¼ï¿½ï¿½ responseï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½, Å©ï¿½ï¿½, ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 /*
- application/octet-stream : MIME Å¸ÀÔÀ¸·Î ÁöÁ¤µÈ µ¥ÀÌÅÍ Å¸ÀÔÀÌ ¾Æ´Ñ ´Ù¸¥ ¸ðµç µ¥ÀÌÅÍ Å¸ÀÔÀ» À§ÇÑ ±âº»°ª
+ application/octet-stream : MIME Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½
  http:/developer.mozilla.org/ko/docs/web/HTTp/Basics_of_HTTP/MIME_types/Common_types
  */
 			response.setContentType("application/octet-stream");
 			response.setContentLength(files.length);
-			/*attachment; fileName¿¡¼­ °ø¹é±âÈ£°¡ ¾øÀ»°æ¿ì ´Ù¿î·Îµå°¡ ¾ÈµÊ
-			 *UTF-8À» ÀÔ·ÂÇÏÁö ¤·³ºÀ»°æ¿ì ¹®ÀÚ°¡ ±úÁø ÇüÅÂ·Î ´Ù¿î·Îµå µÉ °¡´É¼ºÀÌ ³ôÀ½*/
+			/*attachment; fileNameï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½Îµå°¡ ï¿½Èµï¿½
+			 *UTF-8ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½Ù¿ï¿½Îµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½*/
 			response.setHeader("Content-Disposition",
 					"attachment; fileName=\"" + URLEncoder.encode(fileName, "UTF-8") + "\";");
 			response.setHeader("Content-Transfer-Encoding", "binary");
-//¾Õ¿¡¼­ ÀÐ¾î¿Â ÆÄÀÏ Á¤º¸ÀÇ byte[]µ¥ÀÌÅÍ¸¦ response ³»Àå °´Ã¼¿¡ ÀúÀå
+//ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ byte[]ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ response ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			response.getOutputStream().write(files);
-//¸¶Áö¸·À¸·Î response ³»Àå°´Ã¼ÀÇ ¹öÆÛ¸¦ Á¤¸®ÇÏ°í ´ÝÀ½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ response ï¿½ï¿½ï¿½å°´Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½Û¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½
 			response.getOutputStream().flush();
 			response.getOutputStream().close();
 		}

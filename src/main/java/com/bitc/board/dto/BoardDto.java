@@ -4,13 +4,13 @@ import java.util.List;
 
 import lombok.Data;
 
-/*·Òº¹»ç¿ë
- ·Òº¹ : µ¥ÀÌÅÍº£ÀÌ½º¿Í ¸ÅÇÊµÇ´Â dto°´Ã¼¸¦ »ý¼º½Ã getter/setter¸¦ ÀÚµ¿À¸·Î »ý¼ºÇØÁÖ´Â ÇÁ·Î±×·¥
- getter/setter/toString ¸Þ¼­µå¸¦ ÀÚµ¿À»À¸·Î»ý¼ºÇØ ÁÜ
+/*ï¿½Òºï¿½ï¿½ï¿½ï¿½
+ ï¿½Òºï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ÊµÇ´ï¿½ dtoï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ getter/setterï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Î±×·ï¿½
+ getter/setter/toString ï¿½Þ¼ï¿½ï¿½å¸¦ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
  */
 @Data
 public class BoardDto {
-	private int idx;
+	private int Idx;
 	private String title;
 	private String contents;
 	private String createrId;

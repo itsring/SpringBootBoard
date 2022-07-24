@@ -11,13 +11,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 	@Bean
 	public CommonsMultipartResolver multipartResolver() {
 		/*
-		 * apachÀÇ Commons-io ¹× Commons-fileupload¸¦ »ç¿ëÇÏ±â ¶§¹®¿¡ CommonsMultipartResolver¸¦
-		 * ÅëÇØ¼­ MultipartResolver¸¦ ±¸ÇöÇÏ°í ½ºÇÁ¸µ ÇÁ·¹ÀÓ¿öÅ©¿¡ µî·Ï
+		 * apachì˜ Commons-io ë° Commons-fileuploadë¥¼ ì‚¬ìš©í•˜ê¸° ë•Œë¬¸ì— CommonsMultipartResolverë¥¼
+		 * í†µí•´ì„œ MultipartResolverë¥¼ êµ¬í˜„í•˜ê³  ìŠ¤í”„ë§ í”„ë ˆìž„ì›Œí¬ì— ë“±ë¡
 		 */
 		CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
 		commonsMultipartResolver.setDefaultEncoding("UTF-8");
-		/*ÃÖ´ë ¾÷·Îµå °¡´É ÆÄÀÏÅ©±â ¼³Á¤
-		 * ±âº» ´ÜÀ§°¡ byteÀÓ, 5*1024*1024 = 5*1000*1000 => 5byteÀÇ 1000*1000 => 5MB */
+		/*ìµœëŒ€ ì—…ë¡œë“œ ê°€ëŠ¥ íŒŒì¼í¬ê¸° ì„¤ì •
+		 * ê¸°ë³¸ ë‹¨ìœ„ê°€ byteìž„, 5*1024*1024 = 5*1000*1000 => 5byteì˜ 1000*1000 => 5MB */
 		commonsMultipartResolver.setMaxUploadSizePerFile(5 * 1024 * 1024);
 		return commonsMultipartResolver;
 	}
